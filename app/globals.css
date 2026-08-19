@@ -218,6 +218,13 @@ button {
   box-shadow: 0 4px 0 var(--gold-dark);
 }
 
+/* the board sits in its own card with tighter side padding than other
+   cards, so the grid uses more of the available card width */
+.board-card {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
 /* bingo board */
 .board {
   display: grid;
@@ -245,7 +252,7 @@ button {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 3px;
+  padding: 1px;
   box-sizing: border-box;
   font-size: clamp(0.52rem, 2.6vw, 0.72rem);
   font-weight: 600;

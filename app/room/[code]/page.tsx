@@ -183,7 +183,7 @@ export default function RoomPage({ params }: { params: { code: string } }) {
         </div>
       </div>
 
-      <div className="card">
+      <div className="card board-card">
         <p className="section-title">Your Board — {name}</p>
         <BingoBoard board={player.board} crossed={player.crossed} onToggle={handleToggle} />
       </div>
