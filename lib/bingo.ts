@@ -39,7 +39,9 @@ function shuffle<T>(items: T[]): T[] {
 }
 
 export function generateBoard(): string[] {
-  const picks = shuffle(PLAYERS).slice(0, 24);
+  const picks = shuffle(PLAYERS)
+    .slice(0, 24)
+    .map((p) => p.name);
   const board: string[] = [];
   let p = 0;
   for (let i = 0; i < 25; i++) {

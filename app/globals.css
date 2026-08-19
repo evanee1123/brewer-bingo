@@ -249,18 +249,19 @@ button {
 .square .stamp {
   position: absolute;
   inset: -6% ;
-  border: 3px solid var(--stamp);
+  border: 4px solid var(--stamp);
   border-radius: 8px;
   color: var(--stamp);
+  background: rgba(255, 255, 255, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-scorecard), var(--font-body);
   font-weight: 700;
   font-size: clamp(1.4rem, 8vw, 2.2rem);
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.9), 0 0 6px rgba(255, 255, 255, 0.6);
   transform: rotate(-12deg) scale(1);
-  opacity: 0.88;
-  mix-blend-mode: multiply;
+  opacity: 0.92;
   pointer-events: none;
   animation: stamp-in 0.15s ease-out;
 }
