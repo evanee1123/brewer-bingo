@@ -29,6 +29,7 @@ export const PLAYERS: Player[] = [
   { name: "Aaron Ashby", number: 26 },
   { name: "Brandon Woodruff", number: 53 },
   { name: "Quinn Priester", number: 46 },
+
   { name: "Devin Williams", number: 38 },
   { name: "Willy Adames", number: 27 },
   { name: "Corbin Burnes", number: 39 },
@@ -63,4 +64,21 @@ export const PLAYERS: Player[] = [
   { name: "Rickie Weeks", number: 23 },
   { name: "JJ Hardy", number: 7 },
   { name: "Hernan Perez", number: 14 },
+
+  { name: "Luis Lara", number: 18 },
+  { name: "Cooper Pratt", number: 12 },
+  { name: "Bob Uecker", number: 9 }, // honorary broadcaster number, not a playing number
+  { name: "Omar Narvaez", number: 22 },
+  { name: "Orlando Arcia", number: 3 },
+  { name: "Lorenzo Cain", number: 6 },
+  { name: "Corey Knebel", number: 46 },
+  { name: "Francisco Rodriguez", number: 57 },
+  { name: "Jeremy Jeffress", number: 32 },
+  { name: "Casey McGehee", number: 14 },
+  { name: "Jason Kendall", number: 18 },
+  { name: "Trevor Hoffman", number: 51 },
+  { name: "Ted Simmons", number: 23 },
+  { name: "Jim Gantner", number: 17 },
+  { name: "Gorman Thomas", number: 20 },
+  { name: "Don Money", number: 7 },
 ];
