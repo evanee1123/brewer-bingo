@@ -1,0 +1,405 @@
+:root {
+  --navy: #0a1f3d;
+  --navy-light: #123468;
+  --navy-lighter: #1c4587;
+  --gold: #ffc52f;
+  --gold-dark: #d9a300;
+  --paper: #f6efdc;
+  --paper-dark: #e9dfc3;
+  --ink: #0a1f3d;
+  --stamp: #b3131b;
+  --line: rgba(10, 31, 61, 0.18);
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: radial-gradient(circle at top, var(--navy-lighter), var(--navy) 60%);
+  color: var(--paper);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
+
+.wrap {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 16px 48px;
+}
+
+.brand {
+  font-family: var(--font-scorecard), var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.brand-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold);
+  text-align: center;
+  line-height: 1.05;
+  margin: 12px 0 4px;
+}
+
+.brand-sub {
+  text-align: center;
+  color: var(--paper);
+  opacity: 0.75;
+  font-size: 0.9rem;
+  margin-bottom: 28px;
+}
+
+.baseball {
+  display: block;
+  margin: 8px auto 0;
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+/* ticket / scorecard card */
+.card {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 20px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.card + .card {
+  margin-top: 16px;
+}
+
+.ticket-notch {
+  position: relative;
+}
+
+.ticket-notch::before,
+.ticket-notch::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  background: var(--navy);
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.ticket-notch::before {
+  left: -11px;
+}
+
+.ticket-notch::after {
+  right: -11px;
+}
+
+.perforation {
+  border: none;
+  border-top: 2px dashed var(--line);
+  margin: 16px 0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 10px;
+  border: none;
+  background: var(--gold);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  box-shadow: 0 6px 0 var(--gold-dark);
+  transition: transform 0.06s ease, box-shadow 0.06s ease;
+}
+
+.btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--gold-dark);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--paper);
+  border: 2px solid rgba(246, 239, 220, 0.35);
+  box-shadow: none;
+}
+
+.btn-secondary:active {
+  transform: translateY(2px);
+}
+
+.field {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 2px solid var(--line);
+  font-size: 1rem;
+  background: #fff;
+  color: var(--ink);
+}
+
+.field:focus {
+  outline: 2px solid var(--navy-light);
+}
+
+.error-text {
+  color: var(--stamp);
+  font-size: 0.9rem;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.room-code {
+  font-family: var(--font-scorecard), var(--font-body);
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-align: center;
+  color: var(--navy);
+}
+
+.room-code-label {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  opacity: 0.6;
+  margin-bottom: 4px;
+}
+
+.share-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.share-row .btn {
+  font-size: 0.85rem;
+  padding: 10px;
+  box-shadow: 0 4px 0 var(--gold-dark);
+}
+
+/* bingo board */
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+}
+
+.square {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3px;
+  font-size: clamp(0.52rem, 2.6vw, 0.72rem);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--navy);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.square.free {
+  background: var(--navy);
+  color: var(--gold);
+  font-family: var(--font-scorecard), var(--font-body);
+  text-transform: uppercase;
+  font-size: clamp(0.6rem, 3vw, 0.8rem);
+  cursor: default;
+}
+
+.square .stamp {
+  position: absolute;
+  inset: -6% ;
+  border: 3px solid var(--stamp);
+  border-radius: 8px;
+  color: var(--stamp);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-scorecard), var(--font-body);
+  font-weight: 700;
+  font-size: clamp(1.4rem, 8vw, 2.2rem);
+  transform: rotate(-12deg) scale(1);
+  opacity: 0.88;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  animation: stamp-in 0.15s ease-out;
+}
+
+@keyframes stamp-in {
+  from {
+    transform: rotate(-12deg) scale(1.8);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(-12deg) scale(1);
+    opacity: 0.88;
+  }
+}
+
+/* leaderboard */
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.leaderboard-row:last-child {
+  border-bottom: none;
+}
+
+.lb-name {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lb-stats {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.lb-crossed {
+  font-family: var(--font-scorecard), var(--font-body);
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.lb-bingos {
+  color: var(--stamp);
+  font-weight: 700;
+}
+
+.lb-time {
+  display: block;
+  font-size: 0.7rem;
+  opacity: 0.55;
+  margin-top: 2px;
+}
+
+.section-title {
+  font-family: var(--font-scorecard), var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--navy);
+}
+
+/* bingo banner */
+.bingo-banner {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  background: rgba(10, 31, 61, 0.72);
+  animation: fade-in 0.2s ease-out;
+  padding: 20px;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.bingo-banner-card {
+  background: var(--gold);
+  color: var(--navy);
+  border-radius: 16px;
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 340px;
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(0.7) rotate(-4deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+.bingo-banner-title {
+  font-family: var(--font-scorecard), var(--font-body);
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin: 4px 0 8px;
+}
+
+.center {
+  text-align: center;
+}
+
+.muted {
+  opacity: 0.7;
+  font-size: 0.85rem;
+}
+
+.spinner {
+  text-align: center;
+  padding: 40px 0;
+  opacity: 0.7;
+}
+
+.flag {
+  font-size: 0.9rem;
+}
