@@ -156,15 +156,18 @@ button {
   cursor: default;
 }
 
-.btn-secondary {
-  background: transparent;
-  color: var(--paper);
-  border: 2px solid rgba(246, 239, 220, 0.35);
-  box-shadow: none;
+/* smaller gold button for secondary actions (e.g. "Join Room" below the
+   primary "Start New Game" CTA) — same gold fill, lower visual weight via
+   size and a thinner shadow so the two aren't confused for equal actions */
+.btn-compact {
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 0 var(--gold-dark);
 }
 
-.btn-secondary:active {
-  transform: translateY(2px);
+.btn-compact:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--gold-dark);
 }
 
 .field {

@@ -64,7 +64,7 @@ export default function HomePage() {
             onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
             style={{ marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.15em", textAlign: "center" }}
           />
-          <button className="btn btn-secondary" type="submit">
+          <button className="btn btn-compact" type="submit" disabled={!joinCode.trim()}>
             Join Room
           </button>
         </form>
