@@ -1,10 +1,47 @@
 "use client";
 
 import { useId } from "react";
+import type { JerseyVariant } from "@/lib/types";
 
-const NAVY = "#0A1F3D";
-const GOLD = "#FFC52F";
-const PINSTRIPE = "#3A5C99";
+interface VariantStyle {
+  body: string;
+  trim: string;
+  /** Secondary stroke drawn behind `trim` for a two-tone edge (City Connect). */
+  trimEdge?: string;
+  /** Pinstripes only render when this is set — pinstripe variant only. */
+  pinstripeColor?: string;
+  textFill: string;
+  textStroke: string;
+}
+
+const VARIANT_STYLES: Record<JerseyVariant, VariantStyle> = {
+  navy: {
+    body: "#0A1F3D",
+    trim: "#FFC52F",
+    textFill: "#FFC52F",
+    textStroke: "#0A1F3D",
+  },
+  cityConnect: {
+    body: "#5DA9E9",
+    trim: "#FFC52F",
+    trimEdge: "#FFFFFF",
+    textFill: "#FFC52F",
+    textStroke: "#0A1F3D",
+  },
+  gold: {
+    body: "#C9A227",
+    trim: "#0A1F3D",
+    textFill: "#0A1F3D",
+    textStroke: "#FFFFFF",
+  },
+  pinstripe: {
+    body: "#FFFFFF",
+    trim: "#0A1F3D",
+    pinstripeColor: "#0A1F3D",
+    textFill: "#0A1F3D",
+    textStroke: "#FFC52F",
+  },
+};
 
 // Garment silhouette: level shoulders with a shallow U notch cut into the
 // collar (not a raised bump), boxy set-in sleeves with a flat top edge and a
@@ -54,15 +91,18 @@ function nameMetrics(lastName: string): { fontSize: number; targetWidth: number 
 export default function JerseyBack({
   name,
   number,
+  variant,
 }: {
   name: string;
   number: number | null;
+  variant: JerseyVariant;
 }) {
   const uid = useId();
   const arcId = `jersey-arc-${uid}`;
   const shadowId = `jersey-shadow-${uid}`;
   const clipId = `jersey-clip-${uid}`;
 
+  const style = VARIANT_STYLES[variant];
   const lastName = lastNameOf(name);
   const { fontSize: nameSize, targetWidth } = nameMetrics(lastName);
   const numberStr = number !== null ? String(number) : "?";
@@ -87,21 +127,39 @@ export default function JerseyBack({
       </defs>
 
       {/* jersey body fill */}
-      <path d={JERSEY_PATH} fill={NAVY} />
+      <path d={JERSEY_PATH} fill={style.body} />
 
-      {/* subtle pinstripes, clipped to the jersey silhouette */}
-      <g clipPath={`url(#${clipId})`}>
-        {PINSTRIPE_X_POSITIONS.map((x) => (
-          <line key={x} x1={x} y1="0" x2={x} y2="100" stroke={PINSTRIPE} strokeWidth="0.6" opacity="0.55" />
-        ))}
-      </g>
+      {/* pinstripes — pinstripe variant only, clipped to the silhouette */}
+      {style.pinstripeColor && (
+        <g clipPath={`url(#${clipId})`}>
+          {PINSTRIPE_X_POSITIONS.map((x) => (
+            <line
+              key={x}
+              x1={x}
+              y1="0"
+              x2={x}
+              y2="100"
+              stroke={style.pinstripeColor}
+              strokeWidth="0.6"
+              opacity="0.55"
+            />
+          ))}
+        </g>
+      )}
 
-      {/* crisp gold outline on top of body + pinstripes */}
-      <path d={JERSEY_PATH} fill="none" stroke={GOLD} strokeWidth="2.3" strokeLinejoin="round" />
+      {/* outline on top of body + pinstripes — a wider edge stroke behind the
+          trim color gives City Connect its two-tone gold-on-white edge */}
+      {style.trimEdge && (
+        <path d={JERSEY_PATH} fill="none" stroke={style.trimEdge} strokeWidth="3.6" strokeLinejoin="round" />
+      )}
+      <path d={JERSEY_PATH} fill="none" stroke={style.trim} strokeWidth="2.3" strokeLinejoin="round" />
 
       {/* nameplate — gentle arc inside the chest area, below the collar notch */}
       <text
-        fill={GOLD}
+        fill={style.textFill}
+        stroke={style.textStroke}
+        strokeWidth="0.7"
+        paintOrder="stroke"
         fontFamily="var(--font-scorecard), Impact, sans-serif"
         fontWeight={700}
         fontSize={nameSize}
@@ -116,7 +174,7 @@ export default function JerseyBack({
         </textPath>
       </text>
 
-      {/* number — two-tone gold fill with a thin navy outline, embroidered-trim style */}
+      {/* number — two-tone fill with a thin outline, embroidered-trim style */}
       <text
         x="50"
         y="68"
@@ -125,8 +183,8 @@ export default function JerseyBack({
         fontFamily="var(--font-scorecard), Impact, sans-serif"
         fontWeight={700}
         fontSize={numberSize}
-        fill={GOLD}
-        stroke={NAVY}
+        fill={style.textFill}
+        stroke={style.textStroke}
         strokeWidth="1.4"
         paintOrder="stroke"
         filter={`url(#${shadowId})`}

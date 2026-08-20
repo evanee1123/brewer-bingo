@@ -1,10 +1,12 @@
 import { PLAYERS } from "./players";
-import type { PlayerState } from "./types";
+import type { JerseyVariant, PlayerState } from "./types";
 
 export const BOARD_SIZE = 5;
 export const FREE_INDEX = 12;
 export const ROOM_TTL_SECONDS = 60 * 60 * 24;
 const ROOM_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // no I/O, easy to read aloud
+
+export const JERSEY_VARIANTS: JerseyVariant[] = ["navy", "cityConnect", "gold", "pinstripe"];
 
 function buildLines(): number[][] {
   const lines: number[][] = [];
@@ -50,6 +52,17 @@ export function generateBoard(): string[] {
   return board;
 }
 
+// One random variant per square, generated alongside the board so it's
+// assigned per-square-per-board (not per-player globally) and persisted the
+// same way the board itself is.
+export function generateVariants(): JerseyVariant[] {
+  const variants: JerseyVariant[] = [];
+  for (let i = 0; i < 25; i++) {
+    variants.push(JERSEY_VARIANTS[Math.floor(Math.random() * JERSEY_VARIANTS.length)]);
+  }
+  return variants;
+}
+
 export function countBingos(crossed: number[]): number {
   const set = new Set(crossed);
   return LINES.filter((line) => line.every((i) => set.has(i))).length;
@@ -58,6 +71,7 @@ export function countBingos(crossed: number[]): number {
 export function createPlayer(): PlayerState {
   return {
     board: generateBoard(),
+    variants: generateVariants(),
     crossed: [FREE_INDEX],
     bingos: 0,
     firstBingoAt: null,
