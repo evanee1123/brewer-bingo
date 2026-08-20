@@ -38,7 +38,7 @@ export default function RoomPage({ params }: { params: { code: string } }) {
   const [initialLoading, setInitialLoading] = useState(true);
 
   const pendingToggle = useRef(false);
-  const prevBingos = useRef(0);
+  const prevHasBingo = useRef(false);
   const prevMPattern = useRef(false);
   const prevBlackout = useRef(false);
   const isFirstPlayerUpdate = useRef(true);
@@ -84,7 +84,7 @@ export default function RoomPage({ params }: { params: { code: string } }) {
     // progress would fire every applicable banner immediately.
     if (isFirstPlayerUpdate.current) {
       isFirstPlayerUpdate.current = false;
-      prevBingos.current = player.bingos;
+      prevHasBingo.current = player.bingos > 0;
       prevMPattern.current = player.mPatternAt !== null;
       prevBlackout.current = player.blackoutAt !== null;
       return;
@@ -92,7 +92,11 @@ export default function RoomPage({ params }: { params: { code: string } }) {
 
     const newBanners: BannerInfo[] = [];
 
-    if (player.bingos > prevBingos.current) {
+    // Only the 0 -> 1+ transition celebrates — same one-time-per-player
+    // behavior as M pattern and blackout below. The leaderboard still shows
+    // the live, ongoing line count from player.bingos regardless.
+    const hasBingo = player.bingos > 0;
+    if (hasBingo && !prevHasBingo.current) {
       newBanners.push({
         emoji: "🎉⚾🎉",
         title: "BINGO!",
@@ -122,7 +126,7 @@ export default function RoomPage({ params }: { params: { code: string } }) {
       setBannerQueue((q) => [...q, ...newBanners]);
     }
 
-    prevBingos.current = player.bingos;
+    prevHasBingo.current = hasBingo;
     prevMPattern.current = hasM;
     prevBlackout.current = hasBO;
   }, [player]);
