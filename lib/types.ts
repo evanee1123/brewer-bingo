@@ -6,6 +6,8 @@ export interface PlayerState {
   crossed: number[];
   bingos: number;
   firstBingoAt: number | null;
+  mPatternAt: number | null;
+  blackoutAt: number | null;
 }
 
 export interface RoomState {

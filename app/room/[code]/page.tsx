@@ -4,10 +4,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import NameEntry from "@/components/NameEntry";
 import BingoBoard from "@/components/BingoBoard";
 import Leaderboard from "@/components/Leaderboard";
-import { FREE_INDEX, LINES } from "@/lib/bingo";
+import { FREE_INDEX, LINES, hasBlackout, hasMPattern } from "@/lib/bingo";
 import type { PlayerState, RoomState } from "@/lib/types";
 
 const POLL_INTERVAL_MS = 4000;
+
+interface BannerInfo {
+  emoji: string;
+  title: string;
+  subtitle: string;
+}
 
 function storageKey(code: string) {
   return `bb-name-${code}`;
@@ -27,12 +33,15 @@ export default function RoomPage({ params }: { params: { code: string } }) {
   const [joining, setJoining] = useState(false);
   const [joinError, setJoinError] = useState("");
   const [roomNotFound, setRoomNotFound] = useState(false);
-  const [showBanner, setShowBanner] = useState(false);
+  const [bannerQueue, setBannerQueue] = useState<BannerInfo[]>([]);
   const [copied, setCopied] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
 
   const pendingToggle = useRef(false);
   const prevBingos = useRef(0);
+  const prevMPattern = useRef(false);
+  const prevBlackout = useRef(false);
+  const isFirstPlayerUpdate = useRef(true);
 
   const fetchRoom = useCallback(
     async (activeName: string | null) => {
@@ -64,13 +73,58 @@ export default function RoomPage({ params }: { params: { code: string } }) {
     return () => clearInterval(id);
   }, [code, name, fetchRoom]);
 
-  // bingo banner detection
+  // achievement banner detection — bingo, M pattern, and blackout are
+  // independent, so a single toggle can queue up more than one banner
   useEffect(() => {
     if (!player) return;
-    if (player.bingos > prevBingos.current) {
-      setShowBanner(true);
+
+    // The first player state this component ever sees — whether from a
+    // fresh join or a returning visitor's initial fetch — is the baseline,
+    // not a new achievement. Without this, reloading the page with existing
+    // progress would fire every applicable banner immediately.
+    if (isFirstPlayerUpdate.current) {
+      isFirstPlayerUpdate.current = false;
+      prevBingos.current = player.bingos;
+      prevMPattern.current = player.mPatternAt !== null;
+      prevBlackout.current = player.blackoutAt !== null;
+      return;
     }
+
+    const newBanners: BannerInfo[] = [];
+
+    if (player.bingos > prevBingos.current) {
+      newBanners.push({
+        emoji: "🎉⚾🎉",
+        title: "BINGO!",
+        subtitle: `You've got ${player.bingos} line${player.bingos === 1 ? "" : "s"}!`,
+      });
+    }
+
+    const hasM = player.mPatternAt !== null;
+    if (hasM && !prevMPattern.current) {
+      newBanners.push({
+        emoji: "🅼🔥🅼",
+        title: "M PATTERN!",
+        subtitle: "You spelled it out!",
+      });
+    }
+
+    const hasBO = player.blackoutAt !== null;
+    if (hasBO && !prevBlackout.current) {
+      newBanners.push({
+        emoji: "⬛🏆⬛",
+        title: "BLACKOUT!",
+        subtitle: "The whole board, stamped!",
+      });
+    }
+
+    if (newBanners.length > 0) {
+      setBannerQueue((q) => [...q, ...newBanners]);
+    }
+
     prevBingos.current = player.bingos;
+    prevMPattern.current = hasM;
+    prevBlackout.current = hasBO;
   }, [player]);
 
   async function handleJoin(enteredName: string) {
@@ -92,7 +146,6 @@ export default function RoomPage({ params }: { params: { code: string } }) {
       setName(enteredName);
       setRoom(data.room);
       setPlayer(data.player);
-      prevBingos.current = data.player.bingos;
     } catch {
       setJoinError("Couldn't join the room. Try again.");
     } finally {
@@ -110,7 +163,15 @@ export default function RoomPage({ params }: { params: { code: string } }) {
       if (set.has(index)) set.delete(index);
       else set.add(index);
       const crossed = Array.from(set);
-      return { ...prev, crossed, bingos: completedLines(crossed) };
+      const mPattern = hasMPattern(crossed);
+      const blackout = hasBlackout(crossed);
+      return {
+        ...prev,
+        crossed,
+        bingos: completedLines(crossed),
+        mPatternAt: mPattern ? prev.mPatternAt ?? Date.now() : null,
+        blackoutAt: blackout ? prev.blackoutAt ?? Date.now() : null,
+      };
     });
 
     try {
@@ -198,16 +259,19 @@ export default function RoomPage({ params }: { params: { code: string } }) {
         {room && <Leaderboard players={room.players} currentName={name} />}
       </div>
 
-      {showBanner && (
-        <div className="bingo-banner" onClick={() => setShowBanner(false)}>
+      {bannerQueue.length > 0 && (
+        <div className="bingo-banner" onClick={() => setBannerQueue((q) => q.slice(1))}>
           <div className="bingo-banner-card">
-            <div style={{ fontSize: "2.5rem" }}>🎉⚾🎉</div>
-            <div className="bingo-banner-title">BINGO!</div>
-            <p>You&apos;ve got {player.bingos} line{player.bingos === 1 ? "" : "s"}!</p>
+            <div style={{ fontSize: "2.5rem" }}>{bannerQueue[0].emoji}</div>
+            <div className="bingo-banner-title">{bannerQueue[0].title}</div>
+            <p>{bannerQueue[0].subtitle}</p>
             <button
               className="btn"
               style={{ marginTop: 16 }}
-              onClick={() => setShowBanner(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setBannerQueue((q) => q.slice(1));
+              }}
             >
               Keep Playing
             </button>

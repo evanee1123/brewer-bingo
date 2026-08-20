@@ -50,6 +50,16 @@ export default function Leaderboard({
               {p.crossed.length - 1}/{TOTAL_SQUARES}
             </span>
             <span className="lb-bingos">{p.bingos} 🎯</span>
+            {p.mPatternAt && (
+              <span className="lb-badge" title={`M pattern at ${formatTime(p.mPatternAt)}`}>
+                Ⓜ️
+              </span>
+            )}
+            {p.blackoutAt && (
+              <span className="lb-badge" title={`Blackout at ${formatTime(p.blackoutAt)}`}>
+                ⬛
+              </span>
+            )}
           </div>
         </div>
       ))}

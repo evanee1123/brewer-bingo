@@ -439,3 +439,8 @@ button {
 .flag {
   font-size: 0.9rem;
 }
+
+.lb-badge {
+  font-size: 0.9rem;
+  cursor: default;
+}

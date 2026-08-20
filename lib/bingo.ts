@@ -23,6 +23,10 @@ function buildLines(): number[][] {
 
 export const LINES = buildLines();
 
+// Two vertical lines (left/right columns) connected by a V dipping to the
+// center square — reads as an "M" shape on the 5x5 grid.
+export const M_PATTERN = [0, 4, 5, 6, 8, 9, 10, 12, 14, 15, 19, 20, 24];
+
 export function generateRoomCode(): string {
   let code = "";
   for (let i = 0; i < 4; i++) {
@@ -68,6 +72,15 @@ export function countBingos(crossed: number[]): number {
   return LINES.filter((line) => line.every((i) => set.has(i))).length;
 }
 
+export function hasMPattern(crossed: number[]): boolean {
+  const set = new Set(crossed);
+  return M_PATTERN.every((i) => set.has(i));
+}
+
+export function hasBlackout(crossed: number[]): boolean {
+  return crossed.length === 25;
+}
+
 export function createPlayer(): PlayerState {
   return {
     board: generateBoard(),
@@ -75,5 +88,7 @@ export function createPlayer(): PlayerState {
     crossed: [FREE_INDEX],
     bingos: 0,
     firstBingoAt: null,
+    mPatternAt: null,
+    blackoutAt: null,
   };
 }

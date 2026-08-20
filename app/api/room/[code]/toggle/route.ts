@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
-import { countBingos, FREE_INDEX, ROOM_TTL_SECONDS } from "@/lib/bingo";
+import { countBingos, FREE_INDEX, ROOM_TTL_SECONDS, hasBlackout, hasMPattern } from "@/lib/bingo";
 import type { RoomState } from "@/lib/types";
 
 export async function POST(
@@ -54,6 +54,22 @@ export async function POST(
     player.firstBingoAt = Date.now();
   } else if (player.bingos === 0) {
     player.firstBingoAt = null;
+  }
+
+  const now = Date.now();
+
+  const mPattern = hasMPattern(player.crossed);
+  if (mPattern && player.mPatternAt === null) {
+    player.mPatternAt = now;
+  } else if (!mPattern) {
+    player.mPatternAt = null;
+  }
+
+  const blackout = hasBlackout(player.crossed);
+  if (blackout && player.blackoutAt === null) {
+    player.blackoutAt = now;
+  } else if (!blackout) {
+    player.blackoutAt = null;
   }
 
   room.players[name] = player;
